@@ -21,13 +21,6 @@ class DatabaseAPI {
     auth = AuthAPI(client); // Initialize `auth` after `client` is configured
   }
 
-  Future<DocumentList> getMessages() {
-    return databases.listDocuments(
-      databaseId: APPWRITE_DATABASE_ID,
-      collectionId: COLLECTION_BOOK,
-    );
-  }
-
   Future<List<Book>> getAllBooks() async {
     try {
       DocumentList response = await databases.listDocuments(
@@ -80,14 +73,65 @@ class DatabaseAPI {
 
   Future createCategorie(Map<String, dynamic> data) async {
     try {
-      final newPost = await databases.createDocument(
+      final newCategorie = await databases.createDocument(
         databaseId: APPWRITE_DATABASE_ID,
         collectionId: COLLECTION_CATEGORIES,
         documentId: ID.unique(),
         data: data,
       );
       print("create");
-      return newPost;
+      return newCategorie;
+    } catch (error) {
+      print(error);
+
+      // or handle error accordingly
+    }
+  }
+
+  Future updateCategorie(Map<String, dynamic> data, String id) async {
+    try {
+      final updatedCategorie = await databases.updateDocument(
+        databaseId: APPWRITE_DATABASE_ID,
+        collectionId: COLLECTION_CATEGORIES,
+        documentId: id,
+        data: data,
+      );
+      print("update");
+      return updatedCategorie;
+    } catch (error) {
+      print(error);
+
+      // or handle error accordingly
+    }
+  }
+
+  Future updateBook(Map<String, dynamic> data, String id) async {
+    try {
+      final updatedBook = await databases.updateDocument(
+        databaseId: APPWRITE_DATABASE_ID,
+        collectionId: COLLECTION_BOOK,
+        documentId: id,
+        data: data,
+      );
+      print("update");
+      return updatedBook;
+    } catch (error) {
+      print(error);
+
+      // or handle error accordingly
+    }
+  }
+
+  Future createBook(Map<String, dynamic> data) async {
+    try {
+      final newBook = await databases.createDocument(
+        databaseId: APPWRITE_DATABASE_ID,
+        collectionId: COLLECTION_BOOK,
+        documentId: ID.unique(),
+        data: data,
+      );
+      print("create");
+      return newBook;
     } catch (error) {
       print(error);
 
@@ -110,24 +154,5 @@ class DatabaseAPI {
       print('Error fetching books count: $e');
       return 0;
     }
-  }
-
-  Future<Document> addMessage({required String message}) {
-    return databases.createDocument(
-        databaseId: APPWRITE_DATABASE_ID,
-        collectionId: COLLECTION_MESSAGES,
-        documentId: ID.unique(),
-        data: {
-          'text': message,
-          'date': DateTime.now().toString(),
-          'user_id': auth.userid
-        });
-  }
-
-  Future<dynamic> deleteMessage({required String id}) {
-    return databases.deleteDocument(
-        databaseId: APPWRITE_DATABASE_ID,
-        collectionId: COLLECTION_MESSAGES,
-        documentId: id);
   }
 }
